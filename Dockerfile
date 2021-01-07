@@ -19,7 +19,7 @@ ENV AIRFLOW_HOME=${AIRFLOW_USER_HOME}
 COPY config/airflow.cfg ${AIRFLOW_USER_HOME}/airflow.cfg
 EXPOSE 8080 
 #Python Package Dependencies for Airflow 
-RUN pip install pyodbc flask-bcrypt pymssql sqlalchemy psycopg2-binary pymysql
+RUN pip install pyodbc flask-bcrypt pymssql sqlalchemy psycopg2-binary pymysql bs4
 
 #DAGS
 COPY config/airflow.cfg ${AIRFLOW_USER_HOME}/airflow.cfg
