@@ -8,7 +8,9 @@ RUN apt-get update && apt-get install --yes \
     cron \
     gcc \
     g++ \
-    unzip
+    unzip \ 
+    libsqlite3-dev \
+    sqlite3
 RUN pip install apache-airflow[1.10.10]
 RUN cd /usr/local && mkdir airflow && chmod +x airflow && cd airflow
 RUN useradd -ms /bin/bash airflow
@@ -19,7 +21,7 @@ ENV AIRFLOW_HOME=${AIRFLOW_USER_HOME}
 COPY config/airflow.cfg ${AIRFLOW_USER_HOME}/airflow.cfg
 EXPOSE 8080 
 #Python Package Dependencies for Airflow 
-RUN pip install pyodbc flask-bcrypt pymssql sqlalchemy psycopg2-binary pymysql
+RUN pip install  flask-bcrypt pymssql sqlalchemy psycopg2-binary pymysql
 
 #DAGS
 COPY config/airflow.cfg ${AIRFLOW_USER_HOME}/airflow.cfg
@@ -27,21 +29,18 @@ COPY config/airflow.cfg ${AIRFLOW_USER_HOME}/airflow.cfg
 #Remote Logging Setup
 RUN cd ${AIRFLOW_HOME} && mkdir logs && chmod +x -R logs
 
+
 RUN cd /usr/local/airflow && mkdir config && chmod +x -R config 
 COPY config/__init__.py /usr/local/airflow/config/__init__.py
 COPY config/log_config.py /usr/local/airflow/config/log_config.py
 RUN cd  /usr/local/airflow/logs && mkdir scheduler && chmod +x -R scheduler
 
-#Kubernetes
-RUN pip install apache-airflow[kubernetes]
 
 #Environmental Variables
-ENV AIRFLOW__CORE__FERNET_KEY=<your_fernet_key>
-ENV AIRFLOW__CORE__TASK_LOG_READER=gcs.task
 ENV AIRFLOW__CORE__LOGGING_LEVEL=INFO
 ENV AIRFLOW__CORE__LOGGING_CONFIG_CLASS=log_config.LOGGING_CONFIG
 ENV AIRFLOW__CORE__ENCRYPT_S3_LOGS=False
-ENV AIRFLOW__CORE__EXECUTOR=KubernetesExecutor
+ENV AIRFLOW__CORE__EXECUTOR=SequentialExecutor
 
 #Kubernetes Environmental Variables
 ENV AIRFLOW__KUBERNETES_ENVIRONMENT_VARIABLES__AIRFLOW__CORE__REMOTE_LOGGING=True
@@ -55,8 +54,10 @@ ENV AIRFLOW__KUBERNETES_ENVIRONMENT_VARIABLES_KUBE_CLIENT_REQUEST_TIMEOUT_SEC=50
 RUN pip install azure-mgmt-compute azure-mgmt-storage azure-mgmt-resource azure-keyvault-secrets azure-storage-blob 
 RUN pip install azure-storage-file-datalake --pre mysql-connector-python-rf
 
+RUN sqlite3 /usr/local/airflow/airflow.db
+
 #INTIALZING AIRFLOW'S DATABASE
-RUN airflow initdb
+RUN airflow db init
 #Supervisord
 RUN apt-get update && apt-get install -y supervisor          
 COPY /config/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
