@@ -8,7 +8,8 @@ RUN apt-get update && apt-get install --yes \
     cron \
     gcc \
     g++ \
-    unzip
+    unzip \
+    unixodbc-dev
 RUN pip install apache-airflow[1.10.10]
 RUN cd /usr/local && mkdir airflow && chmod +x airflow && cd airflow
 RUN useradd -ms /bin/bash airflow
