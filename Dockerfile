@@ -23,6 +23,7 @@ RUN pip install pyodbc flask-bcrypt pymssql sqlalchemy psycopg2-binary pymysql b
 
 #DAGS
 COPY config/airflow.cfg ${AIRFLOW_USER_HOME}/airflow.cfg
+COPY ./dags /usr/local/airflow/dags
 
 #Remote Logging Setup
 RUN cd ${AIRFLOW_HOME} && mkdir logs && chmod +x -R logs
