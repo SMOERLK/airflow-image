@@ -58,6 +58,7 @@ RUN sqlite3 /usr/local/airflow/airflow.db
 
 #INTIALZING AIRFLOW'S DATABASE
 RUN airflow db init
+RUN airflow db upgrade
 #Supervisord
 RUN apt-get update && apt-get install -y supervisor          
 COPY /config/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
