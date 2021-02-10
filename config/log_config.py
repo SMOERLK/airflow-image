@@ -51,13 +51,13 @@ LOGGING_CONFIG = {
         #     's3_log_folder': S3_LOG_FOLDER,
         #     'filename_template': FILENAME_TEMPLATE,
         # },
-         'gcs.task': {
-             'class': 'airflow.utils.log.gcs_task_handler.GCSTaskHandler',
-             'formatter': 'airflow.task',
-             'base_log_folder': os.path.expanduser(BASE_LOG_FOLDER),
-             'gcs_log_folder': GCS_LOG_FOLDER,
-             'filename_template': FILENAME_TEMPLATE,
-         },
+        #  'gcs.task': {
+        #      'class': 'airflow.utils.log.gcs_task_handler.GCSTaskHandler',
+        #      'formatter': 'airflow.task',
+        #      'base_log_folder': os.path.expanduser(BASE_LOG_FOLDER),
+        #      'gcs_log_folder': GCS_LOG_FOLDER,
+        #      'filename_template': FILENAME_TEMPLATE,
+        #  },
     },
     'loggers': {
         '': {
@@ -75,12 +75,12 @@ LOGGING_CONFIG = {
             'propagate': True,
         },
         'airflow.task': {
-            'handlers': ['gcs.task'],
+            'handlers': ['file.task'],
             'level': LOG_LEVEL,
             'propagate': False,
         },
         'airflow.task_runner': {
-            'handlers': ['gcs.task'],
+            'handlers': ['file.task'],
             'level': LOG_LEVEL,
             'propagate': True,
         },
