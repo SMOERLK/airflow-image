@@ -68,9 +68,11 @@ RUN pip install azure-storage-file-datalake --pre mysql-connector-python-rf
 
 #INTIALZING AIRFLOW'S DATABASE
 RUN airflow initdb
+RUN airflow db upgrade
 #Supervisord
 RUN apt-get update && apt-get install -y supervisor          
 COPY /config/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 RUN chmod +x /etc/supervisor/conf.d/supervisord.conf             
 CMD ["/usr/bin/supervisord"]
+
 
